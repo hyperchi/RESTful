@@ -6,7 +6,6 @@ import argparse
 import json
 
 # user defined packages
-import process
 from search_responds import SearchResponds
 
 class Handler(tornado.web.RequestHandler):
@@ -36,7 +35,8 @@ class Handler(tornado.web.RequestHandler):
         # get bucket name and data config file name from users
         optional1 = self.get_argument("optional1")
         print optional1
-        result = self.search_response.get_item_search_response()#
+        result = self.search_response.get_item_search_response(key_words=optional1)#
+
         self.finish(json.dumps(result))
 
 
