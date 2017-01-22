@@ -21,13 +21,13 @@ class SearchRequests(object):
     def __compose_all_item_search_link(self,
                                      key_words="the hunger games",
                                      search_index="Books",
-                                     item_page="1,2,3,4,5,6,7,8,9"):
+                                     item_page=1):
         key_words = urllib.quote(key_words)
         item_page = urllib.quote(item_page)
         time_stamp = urllib.quote(dt.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"))
         query = "AWSAccessKeyId="+ self.aws_access_key_id\
                 +"&AssociateTag="+ self.associate_tag\
-                +"&ItemPage="+ item_page\
+                +"&ItemPage="+ str(item_page)\
                 +"&Keywords="+ key_words\
                 +"&Operation=ItemSearch&SearchIndex="+search_index\
                 +"&Service=AWSECommerceService&Timestamp=" + time_stamp
@@ -56,7 +56,7 @@ class SearchRequests(object):
         response = requests.get(url=link)
         return response.content
 
-    def get_all_item_search_request(self, key_words="the hunger games", search_index="Books", item_page="1,2,3,4,5,6,7,8,9"):
+    def get_all_item_search_request(self, key_words="the hunger games", search_index="Books", item_page=1):
         all_item_search_request_link = self.__compose_all_item_search_link(key_words=key_words, search_index=search_index, item_page=item_page)
         print  all_item_search_request_link
         response = requests.get(url=all_item_search_request_link)

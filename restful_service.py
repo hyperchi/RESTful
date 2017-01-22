@@ -33,9 +33,11 @@ class Handler(tornado.web.RequestHandler):
         """
 
         # get bucket name and data config file name from users
-        optional1 = self.get_argument("optional1")
-        print optional1
-        result = self.search_response.get_all_item_search_response(key_words=optional1)
+        key_words = self.get_argument("key_words")
+        search_index = self.get_argument("search_index", "Book")
+        item_page = self.get_argument("item_page", 1)
+        print key_words
+        result = self.search_response.get_all_item_search_response(key_words=key_words, search_index=search_index, item_page=item_page)
         self.finish(json.dumps(result))
 
 
