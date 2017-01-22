@@ -71,6 +71,9 @@ class SearchRequests(object):
         query = "".join([query, "&Signature=", hashed_new_signature])
         return "".join(["http://webservices.amazon.com/onca/xml?", query])
 
+    def __compose_search_review_link(self, item_id):
+        pass
+
     def get_search_image_request(self, item_id):
         link = self.__compose_search_image_link(item_id=item_id)
         response = requests.get(url=link)
@@ -80,6 +83,10 @@ class SearchRequests(object):
         link = self.__compose_search_price_link(item_id=item_id)
         response = requests.get(url=link)
         return response.content
+
+    def get_search_review_request(self, item_id):
+
+        pass
 
     def get_all_item_search_request(self, key_words="the hunger games", search_index="All", item_page="1"):
         """
@@ -108,7 +115,6 @@ class SearchRequests(object):
             # add price to search response
             price_response = self.get_search_price_request(item_id=ASIN)
             parsed_price_response = xmltodict.parse(price_response)
-            pdb.set_trace()
             price = parsed_price_response["ItemLookupResponse"]["Items"]["Item"]
             items["Item"][index].setdefault("Price", price)
         return items
