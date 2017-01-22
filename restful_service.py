@@ -4,7 +4,7 @@ import logging.config
 from tornado.httpserver import HTTPServer
 import argparse
 import json
-
+import pdb
 # user defined packages
 from search_responds import SearchResponds
 
@@ -35,8 +35,7 @@ class Handler(tornado.web.RequestHandler):
         # get bucket name and data config file name from users
         optional1 = self.get_argument("optional1")
         print optional1
-        result = self.search_response.get_item_search_response(key_words=optional1)#
-
+        result = self.search_response.get_all_item_search_response(key_words=optional1)
         self.finish(json.dumps(result))
 
 
