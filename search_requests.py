@@ -109,13 +109,13 @@ class SearchRequests(object):
             # add image to the search response
             image_response = self.get_search_image_request(item_id=ASIN)
             parsed_image_response = xmltodict.parse(image_response)
-            image = parsed_image_response['ItemLookupResponse']['Items']['Item']
+            image = parsed_image_response.get('ItemLookupResponse', {}).get('Items', {}).get('Item', {})
             items["Item"][index].setdefault("Image", image)
 
             # add price to search response
             price_response = self.get_search_price_request(item_id=ASIN)
             parsed_price_response = xmltodict.parse(price_response)
-            price = parsed_price_response["ItemLookupResponse"]["Items"]["Item"]
+            price = parsed_price_response.get("ItemLookupResponse", {}).get("Items", {}).get("Item", {})
             items["Item"][index].setdefault("Price", price)
         return items
 
