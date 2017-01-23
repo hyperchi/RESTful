@@ -36,8 +36,15 @@ class Handler(tornado.web.RequestHandler):
         key_words = self.get_argument("key_words")
         search_index = self.get_argument("search_index", "Book")
         item_page = self.get_argument("item_page", 1)
+        get_detail = self.get_argument("detail", False)
+
         print key_words
-        result = self.search_response.get_all_item_search_response(key_words=key_words, search_index=search_index, item_page=item_page)
+        result = {}
+        if not get_detail:
+            result = self.search_response.get_all_item_search_response(key_words=key_words, search_index=search_index, item_page=item_page)
+        elif get_detail:
+            item_id = self.get_argument("item_id")
+            result = self.search_response.get_item_details_response(item_id=item_id)
         self.finish(json.dumps(result))
 
 

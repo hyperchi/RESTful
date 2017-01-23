@@ -30,3 +30,12 @@ class SearchResponds(object):
                                                                     item_page=item_page)
 
         return response
+
+    def get_item_details_response(self, item_id):
+        """
+        get item details
+        :param item_id:
+        :return:
+        """
+        response = self.search_requests.get_item_details_request(item_id=item_id)
+        return response

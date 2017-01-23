@@ -21,7 +21,7 @@ def test_amazon_api(port, optional1):
     # dev mode please use localhost
     url = "".join(["http://localhost:", port, "/amazon_api"])
 
-    resp = requests.get(url, data={"optional1": optional1})
+    resp = requests.get(url, data={"key_words": "harry porter", "search_index": "Books", "item_page": "1"})
     if resp.status_code != requests.codes.ok:
         print("Request failed! ", resp.status_code)
     else:
