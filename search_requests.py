@@ -84,6 +84,18 @@ class SearchRequests(object):
         query = "".join([query, "&Signature=", hashed_new_signature])
         return "".join(["http://webservices.amazon.com/onca/xml?", query])
 
+    def __compose_search_similar_item_link(self, item_id):
+        time_stamp = urllib.quote(dt.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"))
+        query = "AWSAccessKeyId="+self.__aws_access_key_id\
+                +"&AssociateTag="+ self.__associate_tag\
+                +"&IdType=ASIN&ItemId="+ item_id\
+                +"&Operation=ItemLookup&ResponseGroup=Similarities&Service=AWSECommerceService&Timestamp="+ time_stamp
+        string = "\n".join(["GET", "webservices.amazon.com", "/onca/xml", query])
+        new_signature = base64.b64encode(hmac.new(self.__aws_access_key_id_hash, msg=string, digestmod=hashlib.sha256).digest())
+        hashed_new_signature = urllib.quote(new_signature)
+        query = "".join([query, "&Signature=", hashed_new_signature])
+        return "".join(["http://webservices.amazon.com/onca/xml?", query])
+
     def get_search_image_request(self, item_id):
         link = self.__compose_search_image_link(item_id=item_id)
         try:
@@ -107,6 +119,24 @@ class SearchRequests(object):
         except response.status_code != 200:
             return
         return response.content
+
+    def get_search_similar_item_request(self, item_id):
+        link = self.__compose_search_similar_item_link(item_id=item_id)
+        try:
+            response = requests.get(url=link)
+        except response.status_code != 200:
+            return
+        content = xmltodict.parse(response.content)
+        item = content.get('ItemLookupResponse', {}).get('Items', {}).get('Item', {})
+        item_ids = []
+        item_images = []
+        if "ASIN" in item:
+            item_ids.append(item["ASIN"])
+        if item_ids:
+            for id in item_ids:
+                item_images.append(self.get_search_image_request(item_id=id))
+        return item_images
+
 
     def get_all_item_search_request(self, key_words="the hunger games", search_index="Books", item_page="1"):
         """
@@ -150,7 +180,8 @@ class SearchRequests(object):
         image = self.get_search_image_request(item_id=item_id)
         price = self.get_search_image_request(item_id=item_id)
         reviews = self.get_search_review_request(item_id=item_id)
-        response = {"Image": image, "Price": price, "Reviews": reviews}
+        similar_items = self.get_search_similar_item_request(item_id=item_id)
+        response = {"Image": image, "Price": price, "Reviews": reviews, "SimilarItem": similar_items}
         return response
 
 def main():

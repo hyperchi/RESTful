@@ -33,14 +33,14 @@ class Handler(tornado.web.RequestHandler):
         """
 
         # get bucket name and data config file name from users
-        key_words = self.get_argument("key_words")
-        search_index = self.get_argument("search_index", "Book")
-        item_page = self.get_argument("item_page", 1)
         get_detail = self.get_argument("detail", False)
 
-        print key_words
         result = {}
         if not get_detail:
+            key_words = self.get_argument("key_words")
+            search_index = self.get_argument("search_index", "Book")
+            item_page = self.get_argument("item_page", 1)
+            print key_words
             result = self.search_response.get_all_item_search_response(key_words=key_words, search_index=search_index, item_page=item_page)
         elif get_detail:
             item_id = self.get_argument("item_id")
