@@ -24,7 +24,11 @@ class Handler(tornado.web.RequestHandler):
 
     def initialize(self):
         self.logger = logging.getLogger("api_logger")
-        self.search_response = SearchResponds()
+        with open("config.json") as file:
+            data = json.load(file)
+        aws_key = data['aws_key']
+        aws_key_hash = data['aws_key_hash']
+        self.search_response = SearchResponds(aws_key=aws_key, aws_key_hash=aws_key_hash)
 
     def get(self):
         """
@@ -57,7 +61,7 @@ def main():
     print("Loading arguments...")
     parser = argparse.ArgumentParser("sAPI parser")
     parser.add_argument("-p", "--port", dest="port", help="which port to listen to", default=12345, type=int)
-
+    parser.add_argument("-c", "--config", dest="config", help="aws key file", default="config.json", type=str)
     args = parser.parse_args()
 
     app = tornado.web.Application([(r"/amazon_api", Handler, {})])

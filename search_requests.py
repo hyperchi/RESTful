@@ -6,18 +6,18 @@ import hashlib
 import base64
 import pdb
 import xmltodict
-
+import json
 
 class SearchRequests(object):
     """
     class to handle all search requests
     """
-    def __init__(self):
+    def __init__(self, aws_key, aws_key_hash):
         self.class_name = "SearchRequests"
-        self.__aws_access_key_id = ""
+        self.__aws_access_key_id = aws_key
         self.__associate_tag = "hyperbolechi-20"
         self.__version = "2013-08-01"
-        self.__aws_access_key_id_hash = ""
+        self.__aws_access_key_id_hash = aws_key_hash
 
     def __compose_all_item_search_link(self,
                                        key_words="the hunger games",
@@ -153,6 +153,8 @@ class SearchRequests(object):
         response = requests.get(url=all_item_search_request_link)
         parse_response = xmltodict.parse(response.content)
         items = parse_response.get("ItemSearchResponse", {}).get("Items", {})
+        pdb.set_trace()
+
         if items:
             for index, item in enumerate(items["Item"]):
 
@@ -185,7 +187,9 @@ class SearchRequests(object):
         return response
 
 def main():
-    search_request = SearchRequests()
+    with open("config.json") as file:
+        data = json.load(file)
+    search_request = SearchRequests(aws_key=data['aws_key'], aws_key_hash=data['aws_key_hash'])
     res = search_request.get_all_item_search_request(key_words="harry porter")
 
     print res

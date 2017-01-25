@@ -13,9 +13,9 @@ class SearchResponds(object):
     will call search engine for it
 
     """
-    def __init__(self):
+    def __init__(self, aws_key, aws_key_hash):
         self.class_name = "SearchRespond"
-        self.search_requests = SearchRequests()
+        self.search_requests = SearchRequests(aws_key=aws_key, aws_key_hash=aws_key_hash)
 
     def get_all_item_search_response(self, key_words="the hunger games", search_index="Books", item_page="1,2,3,4,5,6,7,8,9"):
         """
