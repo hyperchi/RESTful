@@ -26,8 +26,8 @@ class Handler(tornado.web.RequestHandler):
         self.logger = logging.getLogger("api_logger")
         with open("config.json") as file:
             data = json.load(file)
-        aws_key = data['aws_key']
-        aws_key_hash = data['aws_key_hash']
+        aws_key = str(data['aws_key'])
+        aws_key_hash = str(data['aws_key_hash'])
         self.search_response = SearchResponds(aws_key=aws_key, aws_key_hash=aws_key_hash)
 
     def get(self):

@@ -12,12 +12,13 @@ class SearchRequests(object):
     """
     class to handle all search requests
     """
-    def __init__(self, aws_key, aws_key_hash):
+    def __init__(self, aws_key, aws_key_hash, search_page_factor=3):
         self.class_name = "SearchRequests"
         self.__aws_access_key_id = aws_key
         self.__associate_tag = "hyperbolechi-20"
         self.__version = "2013-08-01"
         self.__aws_access_key_id_hash = aws_key_hash
+        self.__search_page_factor = search_page_factor
 
     def __compose_all_item_search_link(self,
                                        key_words="the hunger games",
@@ -146,14 +147,22 @@ class SearchRequests(object):
         :param item_page:    type string the page of item we want to display
         :return:
         """
-        all_item_search_request_link = self.__compose_all_item_search_link(key_words=key_words,
-                                                                           search_index=search_index,
-                                                                           item_page=item_page)
-        print  all_item_search_request_link
-        response = requests.get(url=all_item_search_request_link)
-        parse_response = xmltodict.parse(response.content)
-        items = parse_response.get("ItemSearchResponse", {}).get("Items", {})
-        pdb.set_trace()
+        start_page = int(item_page)
+        items = None
+        for page in range((start_page - 1) * self.__search_page_factor, start_page * self.__search_page_factor):
+            all_item_search_request_link = self.__compose_all_item_search_link(key_words=key_words,
+                                                                               search_index=search_index,
+                                                                               item_page=str(page + 1))
+            print  all_item_search_request_link
+            response = requests.get(url=all_item_search_request_link)
+            parse_response = xmltodict.parse(response.content)
+            partial_items = parse_response.get("ItemSearchResponse", {}).get("Items", {})
+            if not items:
+                items = partial_items
+            else:
+                other_page_item = partial_items.get("ItemSearchResponse", {}).get("Items", {})
+                if other_page_item:
+                    items['Item'].extend(other_page_item)
 
         if items:
             for index, item in enumerate(items["Item"]):
@@ -189,7 +198,7 @@ class SearchRequests(object):
 def main():
     with open("config.json") as file:
         data = json.load(file)
-    search_request = SearchRequests(aws_key=data['aws_key'], aws_key_hash=data['aws_key_hash'])
+    search_request = SearchRequests(aws_key=str(data['aws_key']), aws_key_hash=str(data['aws_key_hash']))
     res = search_request.get_all_item_search_request(key_words="harry porter")
 
     print res
