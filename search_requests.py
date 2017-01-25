@@ -14,10 +14,10 @@ class SearchRequests(object):
     """
     def __init__(self):
         self.class_name = "SearchRequests"
-        self.__aws_access_key_id = "AKIAJYIMWZ42Y4PHDTJQ"
+        self.__aws_access_key_id = ""
         self.__associate_tag = "hyperbolechi-20"
         self.__version = "2013-08-01"
-        self.__aws_access_key_id_hash = "pGCKw2XnmuQH0Vj5i4LBiC0oSoX5b7uV3lLmT6Dj"
+        self.__aws_access_key_id_hash = ""
 
     def __compose_all_item_search_link(self,
                                        key_words="the hunger games",
