@@ -7,6 +7,7 @@ import base64
 import pdb
 import xmltodict
 import json
+import datetime as dt
 
 class SearchRequests(object):
     """
@@ -149,13 +150,16 @@ class SearchRequests(object):
         """
         start_page = int(item_page)
         items = None
-        for page in range((start_page - 1) * self.__search_page_factor, start_page * self.__search_page_factor):
+        for page in xrange((start_page - 1) * self.__search_page_factor, start_page * self.__search_page_factor):
             all_item_search_request_link = self.__compose_all_item_search_link(key_words=key_words,
                                                                                search_index=search_index,
                                                                                item_page=str(page + 1))
-            print  all_item_search_request_link
+            #print  all_item_search_request_link
+            print(dt.datetime.now())
             response = requests.get(url=all_item_search_request_link)
+            print(dt.datetime.now())
             parse_response = xmltodict.parse(response.content)
+            #pdb.set_trace()
             partial_items = parse_response.get("ItemSearchResponse", {}).get("Items", {})
             if not items:
                 items = partial_items
@@ -199,9 +203,10 @@ def main():
     with open("config.json") as file:
         data = json.load(file)
     search_request = SearchRequests(aws_key=str(data['aws_key']), aws_key_hash=str(data['aws_key_hash']))
+    #print(dt.datetime.now())
     res = search_request.get_all_item_search_request(key_words="harry porter")
-
-    print res
+    #print(dt.datetime.now())
+    #print res
 
 if __name__== "__main__":
     main()
