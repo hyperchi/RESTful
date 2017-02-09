@@ -154,7 +154,7 @@ class SearchRequests(object):
             all_item_search_request_link = self.__compose_all_item_search_link(key_words=key_words,
                                                                                search_index=search_index,
                                                                                item_page=str(page + 1))
-            #print  all_item_search_request_link
+            print  all_item_search_request_link
             print(dt.datetime.now())
             response = requests.get(url=all_item_search_request_link)
             print(dt.datetime.now())
@@ -197,6 +197,8 @@ class SearchRequests(object):
         reviews = self.get_search_review_request(item_id=item_id)
         similar_items = self.get_search_similar_item_request(item_id=item_id)
         response = {"Image": image, "Price": price, "Reviews": reviews, "SimilarItem": similar_items}
+
+
         return response
 
 def main():
